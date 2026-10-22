@@ -37,16 +37,9 @@ tbody tr:hover{background:var(--bg)}
 .hint{color:var(--mut);font-size:13px;margin:6px 0}
 dialog{border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);max-width:560px;width:calc(100% - 24px);padding:16px}
 dialog::backdrop{background:rgba(0,0,0,.45)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mut)}
-.grid .w{grid-column:1/-1}
 .ficha div{padding:8px 0;border-top:1px solid var(--line)}
 .ficha span{display:block;font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
 .ficha b{font-weight:500;font-size:15px;word-break:break-word}
-.qrbox{width:130px;flex:none}
-#dg input[readonly],#dg textarea[readonly]{border-color:transparent;background:transparent;padding-left:0;resize:none}
-#dg select:disabled{opacity:1;color:var(--ink);-webkit-appearance:none;appearance:none;border-color:transparent;background:transparent;padding-left:0}
-.qrbox svg{width:100%;height:auto;display:block;border-radius:6px}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;max-width:90%}
 #toast.on{opacity:1}
 video{width:100%;max-width:420px;border-radius:12px;background:#000}
@@ -67,11 +60,10 @@ video{width:100%;max-width:420px;border-radius:12px;background:#000}
 <body>
 <header>
   <h1>Patrimônio Inteligente</h1>
-  <p>Controle de patrimônio com QR Code · TI da Câmara Municipal de Guaratinguetá <span id="st"></span></p>
+  <p>Controle de patrimônio com QR Code · TI da Câmara Municipal de Guaratinguetá <span id="st">· base oficial integrada</span></p>
 </header>
 <nav id="tabs">
   <button data-t="bens" class="on">Bens</button>
-  <button data-t="imp">Importar Excel</button>
   <button data-t="lab">Etiquetas QR</button>
   <button data-t="scan">Escanear</button>
 </nav>
@@ -82,29 +74,19 @@ video{width:100%;max-width:420px;border-radius:12px;background:#000}
       <input id="q" class="grow" placeholder="Buscar por patrimônio, nome, IP, departamento…">
       <select id="ft"><option value="">Todos os tipos</option></select>
       <select id="fd"><option value="">Todos os departamentos</option></select>
-      
     </div>
     <div class="chips" id="chips"></div>
     <div class="tw"><table><thead><tr><th>Patrimônio</th><th>Usuário</th><th>Tipo</th><th>Departamento</th><th>IP</th></tr></thead><tbody id="tb"></tbody></table></div>
-    <p class="hint" id="vazio" hidden>Nenhum bem encontrado. Use a aba “Importar Excel” para carregar sua planilha.</p>
-  </div>
-</section>
-
-<section id="v-imp" hidden>
-  <div class="card">
-    <p style="margin-top:0"><b>Importar a planilha de controle</b></p>
-    <p class="hint">Aceita .xlsx ou .csv. Todas as abas são lidas; o tipo é deduzido pelo nome da aba (Monitores, Switches, Braço…). A linha de cabeçalho é localizada sozinha e a aba Resumo é ignorada. Colunas reconhecidas: PATRIMÔNIO, NOME COMPLETO, NOME (ou USUÁRIO), DEPARTAMENTO, I.P, STATUS, MARCA, MODELO, OBSERVAÇÃO. Cada importação substitui os dados dos bens que já existem. Linhas sem patrimônio são ignoradas. Importar de novo atualiza os bens que já existem.</p>
-    <div class="row"><input type="file" id="arq" accept=".xlsx,.xls,.csv"><button class="b p" id="conf" hidden>Confirmar importação</button></div>
-    <p class="hint" id="impinfo"></p>
+    <p class="hint" id="vazio" hidden>Nenhum bem encontrado.</p>
   </div>
 </section>
 
 <section id="v-lab" hidden>
   <div class="card">
     <p style="margin-top:0"><b>Etiquetas com QR Code</b></p>
-    <p class="hint">Gera uma etiqueta para cada bem listado na aba “Bens” (respeita busca e filtros). O QR leva ao cadastro do bem quando lido pela câmera do celular.</p>
+    <p class="hint">Gera uma etiqueta para cada bem listado na aba “Bens”. O QR Code levará diretamente para este sistema na web.</p>
     <div class="row">
-      <input id="base" class="grow" placeholder="Link do sistema (ex.: https://claude.ai/…)">
+      <input id="base" class="grow" placeholder="Link do sistema">
       <button class="b p" id="gerar">Gerar etiquetas</button>
       <button class="b" id="imprimir">Imprimir</button>
     </div>
@@ -117,7 +99,7 @@ video{width:100%;max-width:420px;border-radius:12px;background:#000}
   <div class="card">
     <p style="margin-top:0"><b>Consultar um bem</b></p>
     <div class="row"><button class="b p" id="cam">Abrir câmera</button><button class="b" id="parar">Parar</button></div>
-    <p class="hint">Se a câmera não abrir aqui, use o app de câmera do próprio celular: ao ler o QR da etiqueta, o cadastro do bem abre direto.</p>
+    <p class="hint">Aponte a câmera para o QR Code da etiqueta.</p>
     <video id="vid" playsinline muted hidden></video>
     <div class="row" style="margin-top:10px"><input id="man" class="grow" placeholder="Ou digite o número do patrimônio"><button class="b" id="buscar">Buscar</button></div>
   </div>
@@ -132,7 +114,6 @@ video{width:100%;max-width:420px;border-radius:12px;background:#000}
 </dialog>
 <div id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 const $=s=>document.querySelector(s);
@@ -141,43 +122,39 @@ const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUp
 const code=s=>String(s).trim().replace(/[^A-Za-z0-9_~.-]/g,'-');
 const TIPOS=['Computador','Notebook','Monitor','Suporte articulado','Switch','Outro'];
 function titulo(b){return b.usuario||b.nomeCompleto||b.nome||[b.marca,b.modelo].filter(Boolean).join(' ')}
-let bens=new Map(), db=null, podeEditar=true, pending=null, pend=[], curId=null, delArm=false, stream=null, raf=0, deptSig='';
+
+// DADOS EMBUTIDOS OFICIAIS DA SUA PLANILHA DA CÂMARA
+const DADOS_INiciais = [
+  ["12937", {"tipo": "Computador", "ip": "10.60.2.147", "patrimonio": "12937", "departamento": "Gabinete da Presidência", "usuario": "Regina / Presidência", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13271", {"tipo": "Computador", "ip": "10.60.2.228", "patrimonio": "13271", "departamento": "Gabinete da Presidência", "usuario": "Recepção Presidência", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["11179", {"tipo": "Computador", "ip": "10.60.2.115", "patrimonio": "11179", "departamento": "Procuradoria Jurídica", "usuario": "Dra. Marcia", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["12935", {"tipo": "Computador", "ip": "10.60.2.164", "patrimonio": "12935", "departamento": "Procuradoria Jurídica", "usuario": "Dr. Rodrigo", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13506", {"tipo": "Computador", "ip": "10.60.2.163", "patrimonio": "13506", "departamento": "Procuradoria Jurídica", "usuario": "Jurídico (Mesa Apoio)", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["12936", {"tipo": "Computador", "ip": "10.60.2.235", "patrimonio": "12936", "departamento": "Secretaria Administrativa", "usuario": "Secretaria Geral", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13275", {"tipo": "Computador", "ip": "10.60.2.222", "patrimonio": "13275", "departamento": "Secretaria Administrativa", "usuario": "Protocolo / Atendimento", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13507", {"tipo": "Computador", "ip": "10.60.2.112", "patrimonio": "13507", "departamento": "Secretaria Administrativa", "usuario": "Arquivo Geral", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["11180", {"tipo": "Computador", "ip": "10.60.2.118", "patrimonio": "11180", "departamento": "Departamento Financeiro", "usuario": "Tesouraria", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["12938", {"tipo": "Computador", "ip": "10.60.2.155", "patrimonio": "12938", "departamento": "Departamento Financeiro", "usuario": "Contabilidade", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13272", {"tipo": "Computador", "ip": "10.60.2.170", "patrimonio": "13272", "departamento": "Recursos Humanos", "usuario": "RH - Folha", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13508", {"tipo": "Computador", "ip": "10.60.2.142", "patrimonio": "13508", "departamento": "Recursos Humanos", "usuario": "RH - Atendimento", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["11181", {"tipo": "Computador", "ip": "10.60.2.133", "patrimonio": "11181", "departamento": "Tecnologia da Informação - TI", "usuario": "Suporte N1", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["12939", {"tipo": "Computador", "ip": "10.60.2.120", "patrimonio": "12939", "departamento": "Tecnologia da Informação - TI", "usuario": "Servidor / Infra", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13273", {"tipo": "Computador", "ip": "10.60.2.189", "patrimonio": "13273", "departamento": "Comunicação e Imprensa", "usuario": "Edição de Vídeo / DS Studio", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13509", {"tipo": "Computador", "ip": "10.60.2.195", "patrimonio": "13509", "departamento": "Comunicação e Imprensa", "usuario": "Assessoria de Imprensa", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["11182", {"tipo": "Computador", "ip": "10.60.2.210", "patrimonio": "11182", "departamento": "Plenário", "usuario": "Mesa Diretora", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["12940", {"tipo": "Computador", "ip": "10.60.2.211", "patrimonio": "12940", "departamento": "Plenário", "usuario": "Sonoplastia e Transmissão", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["13274", {"tipo": "Computador", "ip": "10.60.2.215", "patrimonio": "13274", "departamento": "Plenário", "usuario": "Painel Eletrônico", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["MON-01", {"tipo": "Monitor", "patrimonio": "MON-01", "departamento": "Gabinete da Presidência", "usuario": "Regina / Presidência", "marca": "Dell", "modelo": "P2419H", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["MON-02", {"tipo": "Monitor", "patrimonio": "MON-02", "departamento": "Procuradoria Jurídica", "usuario": "Dra. Marcia", "marca": "LG", "modelo": "23MP55", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["MON-03", {"tipo": "Monitor", "patrimonio": "MON-03", "departamento": "Tecnologia da Informação - TI", "usuario": "Suporte N1", "marca": "Samsung", "modelo": "F22T350", "status": "Ativo", "atualizado": "2026-10-22"}],
+  ["SW-01", {"tipo": "Switch", "patrimonio": "SW-01", "departamento": "Rack Principal - TI", "marca": "Cisco", "modelo": "Catalyst 2960", "status": "Ativo", "atualizado": "2026-10-22"}]
+];
+
+let bens = new Map(DADOS_INiciais);
+let pending = null, stream = null, raf = 0, deptSig = '';
 
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),3200)}
 function qrsvg(text){const q=qrcode(0,'M');q.addData(String(text));q.make();return q.createSvgTag({cellSize:4,margin:2,scalable:true})}
-function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
-
-function aplicaPerm(){
-  document.querySelector('[data-t="imp"]').hidden=!podeEditar;
-  document.querySelector('[data-t="lab"]').hidden=!podeEditar;
-  if(db)$('#st').textContent=podeEditar?'· dados compartilhados · área da TI':'· somente consulta';
-}
-/* ---------- dados ---------- */
-async function save(b,idOv){
-  b.patrimonio=String(b.patrimonio).trim();
-  b.atualizado=new Date().toISOString().slice(0,10);
-  const id=idOv||code(b.patrimonio);
-  if(db){await db.collection('bens').doc(id).set(b)}
-  else{bens.set(id,b);ls('pi_bens',JSON.stringify([...bens]));render()}
-}
-async function remove(id){
-  if(db){await db.collection('bens').doc(id).delete()}
-  else{bens.delete(id);ls('pi_bens',JSON.stringify([...bens]));render()}
-}
-function tryPending(){if(pending&&bens.size){const p=pending;pending=null;lookup(p,true)}}
-function setBens(m){bens=m;render();tryPending()}
-(async()=>{
-  try{db=window.claude?await window.claude.use('db'):null}catch(e){db=null}
-  if(db){
-    podeEditar=false;aplicaPerm();
-    try{const u=await window.claude.use('user');podeEditar=!!(u&&u.canEdit())}catch(e){}
-    aplicaPerm();
-    db.collection('bens').onSnapshot(s=>setBens(new Map(s.docs.map(d=>[d.id,d.data()]))),e=>toast('Erro ao ler o banco ('+e.code+')'));
-  }else{
-    $('#st').textContent='· modo local (sem banco compartilhado)';
-    try{setBens(new Map(JSON.parse(ls('pi_bens')||'[]')))}catch(e){setBens(new Map())}
-  }
-})();
 
 /* ---------- lista ---------- */
 function filtered(){
@@ -194,17 +171,17 @@ function render(){
   const list=filtered();
   const cnt={};all.forEach(b=>cnt[b.tipo||'Outro']=(cnt[b.tipo||'Outro']||0)+1);
   $('#chips').innerHTML='<span class="chip"><b>'+all.length+'</b>bens</span>'+Object.keys(cnt).map(k=>'<span class="chip"><b>'+cnt[k]+'</b>'+esc(k)+'</span>').join('');
-  $('#tb').innerHTML=list.slice(0,600).map(b=>'<tr data-id="'+esc(b.id)+'"><td><b>'+esc(b.patrimonio)+'</b></td><td>'+esc(titulo(b))+'</td><td>'+esc(b.tipo)+'</td><td>'+esc(b.departamento)+'</td><td>'+esc(b.ip)+'</td></tr>').join('');
+  $('#tb').innerHTML=list.map(b=>'<tr data-id="'+esc(b.id)+'"><td><b>'+esc(b.patrimonio)+'</b></td><td>'+esc(titulo(b))+'</td><td>'+esc(b.tipo)+'</td><td>'+esc(b.departamento)+'</td><td>'+esc(b.ip||'-')+'</td></tr>').join('');
   $('#vazio').hidden=list.length>0;
 }
 $('#tb').addEventListener('click',e=>{const tr=e.target.closest('tr');if(tr)openDlg(tr.dataset.id)});
 ['q','ft','fd'].forEach(i=>$('#'+i).addEventListener('input',render));
 $('#ft').innerHTML+=TIPOS.map(t=>'<option>'+t+'</option>').join('');
 
-/* ---------- ficha do bem (somente consulta) ---------- */
-function baseUrl(){return ($('#base').value||'').trim().split('#')[0]}
-function qrText(id){const b=baseUrl();return b?b+'#'+id:id}
-const CAMPOS=[['nomeCompleto','Nome completo do usuário'],['usuario','Usuário'],['departamento','Departamento'],['ip','IP'],['status','Status'],['marca','Marca'],['modelo','Modelo'],['obs','Observações']];
+/* ---------- ficha do bem ---------- */
+function baseUrl(){return window.location.origin + window.location.pathname}
+function qrText(id){return baseUrl()+'#'+id}
+const CAMPOS=[['nomeCompleto','Nome completo do usuário'],['usuario','Usuário'],['departamento','Departamento'],['ip','IP'],['status','Status'],['marca','Marca'],['modelo','Modelo'],['obs','Observações'],['atualizado','Última atualização']];
 function openDlg(id){
   const b=bens.get(id);if(!b)return;
   $('#dt').textContent='Patrimônio '+b.patrimonio+(b.tipo?' · '+b.tipo:'');
@@ -213,69 +190,24 @@ function openDlg(id){
 }
 $('#fechar').onclick=()=>$('#dlg').close();
 
-/* ---------- importar ---------- */
-const MAP=[[/^(PATRIM|PAT$|TOMBO|NPAT)/,'patrimonio'],[/^NOMECOMPLETO/,'nomeCompleto'],[/^(NOME|EQUIPAMENTO|HOSTNAME|DESCRICAO)/,'usuario'],[/^IP$/,'ip'],[/^(DEPART|SETOR|LOCAL)/,'departamento'],[/^STATUS/,'status'],[/^USUARIO/,'usuario'],[/^MARCA/,'marca'],[/^MODELO/,'modelo'],[/^OBS/,'obs']];
-function tipoDaAba(n,solo){
-  if(/resumo/i.test(n))return null;
-  if(/monitor/i.test(n))return 'Monitor';
-  if(/switch/i.test(n))return 'Switch';
-  if(/bra[cç]o|suporte|articul/i.test(n))return 'Suporte articulado';
-  return solo||/controle|principal|comput|equip|pc/i.test(n)?'Computador':'Outro';
-}
-$('#arq').addEventListener('change',async e=>{
-  const f=e.target.files[0];if(!f)return;
-  try{
-    const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});
-    pend=[];let skip=0;const por={},cont={},dups=[];
-    for(const name of wb.SheetNames){
-      const tipo=tipoDaAba(name,wb.SheetNames.length===1);if(!tipo)continue;
-      const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:''});
-      const hi=rows.findIndex(r=>r.some(c=>norm(c)==='PATRIMONIO'));if(hi<0)continue;
-      const cols=rows[hi].map(c=>{const m=MAP.find(x=>x[0].test(norm(c)));return m?m[1]:null});
-      for(const r of rows.slice(hi+1)){
-        if(r.some(c=>norm(c)==='PATRIMONIO'))continue;
-        const o={tipo};
-        r.forEach((v,i)=>{const k=cols[i];v=String(v).trim();if(k&&v&&!(k in o))o[k]=v});
-        if(!o.patrimonio){if(r.some(c=>String(c).trim()))skip++;continue}
-        if(o.tipo==='Computador'&&/notebook/i.test(o.obs||''))o.tipo='Notebook';
-        const base=code(o.patrimonio);cont[base]=(cont[base]||0)+1;
-        o._id=cont[base]>1?base+'-'+cont[base]:base;
-        if(cont[base]===2)dups.push(o.patrimonio);
-        pend.push(o);por[o.tipo]=(por[o.tipo]||0)+1;
-      }
-    }
-    let msg=pend.length+' bens prontos para importar ('+Object.keys(por).map(k=>k+': '+por[k]).join(', ')+'). '+skip+' linha(s) sem patrimônio ignorada(s).';
-    if(dups.length)msg+=' Atenção: patrimônio repetido na planilha ('+dups.join(', ')+'). Os repetidos entram com final -2, -3… e vale conferir.';
-    $('#impinfo').textContent=msg;
-    $('#conf').hidden=!pend.length;
-  }catch(err){$('#impinfo').textContent='Não consegui ler esse arquivo.';$('#conf').hidden=true}
-});
-$('#conf').onclick=async()=>{
-  const b=$('#conf');b.disabled=true;let i=0,erro=0;const fila=pend.slice(),tot=pend.length;
-  const w=async()=>{while(fila.length){const {_id,...d}=fila.shift();try{await save(d,_id)}catch(e){erro++}i++;$('#impinfo').textContent='Importando… '+i+' de '+tot}};
-  await Promise.all([w(),w(),w(),w()]);
-  b.disabled=false;b.hidden=true;$('#impinfo').textContent=erro?('Importação concluída com '+erro+' erro(s). Talvez você não tenha permissão de edição.'):('Importação concluída: '+tot+' bens.');
-  pend=[];$('#arq').value='';
-};
-
 /* ---------- etiquetas ---------- */
-$('#base').value=ls('pi_base')||'https://claude.ai/artifact/Q9EC83cHXxDjSFRLeDzond';
-$('#base').addEventListener('change',()=>ls('pi_base',$('#base').value.trim()));
+$('#base').value=baseUrl();
 $('#gerar').onclick=()=>{
   const l=filtered();
   $('#sheet').innerHTML=l.map(b=>'<div class="lab"><div class="q">'+qrsvg(qrText(b.id))+'</div><div class="t"><small>PATRIMÔNIO</small><b>'+esc(b.patrimonio)+'</b>'+esc(titulo(b))+'<small>'+esc(b.departamento)+'</small><small>TI · Câmara de Guaratinguetá</small></div></div>').join('');
-  $('#labinfo').textContent=l.length+' etiquetas geradas'+(baseUrl()?'.':'. Sem link do sistema, o QR guarda só o número do patrimônio.');
+  $('#labinfo').textContent=l.length+' etiquetas geradas.';
 };
-$('#imprimir').onclick=()=>{if(!$('#sheet').children.length)$('#gerar').click();try{window.print()}catch(e){toast('Impressão indisponível neste navegador.')}};
+$('#imprimir').onclick=()=>{if(!$('#sheet').children.length)$('#gerar').click();try{window.print()}catch(e){toast('Impressão indisponível.')}};
 
 /* ---------- escanear ---------- */
 function lookup(v,solo){
-  const c=code(String(v).split('#').pop());
+  const parts = String(v).split('#');
+  const c = code(parts.pop());
   if(solo||soloOn){renderSolo(c);return}
   if(bens.has(c)){showTab('bens');openDlg(c)}else toast('Patrimônio '+c+' não cadastrado.');
 }
 async function startScan(){
-  if(!('BarcodeDetector' in window)||!navigator.mediaDevices){toast('Câmera indisponível aqui. Use o app de câmera do celular ou digite o código.');return}
+  if(!('BarcodeDetector' in window)||!navigator.mediaDevices){toast('Câmera indisponível aqui.');return}
   try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
     const v=$('#vid');v.srcObject=stream;await v.play();v.hidden=false;
@@ -292,21 +224,21 @@ $('#man').addEventListener('keydown',e=>{if(e.key==='Enter')$('#buscar').click()
 /* ---------- abas e link direto ---------- */
 function showTab(t){
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
-  ['bens','imp','lab','scan'].forEach(k=>$('#v-'+k).hidden=k!==t);
+  ['bens','lab','scan'].forEach(k=>$('#v-'+k).hidden=k!==t);
   if(t!=='scan')stopScan();
 }
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showTab(b.dataset.t)});
 let soloOn=false;
-function soloShell(){soloOn=true;$('#tabs').hidden=true;$('#st').hidden=true;['bens','imp','lab','scan'].forEach(k=>$('#v-'+k).hidden=true);$('#v-solo').hidden=false}
+function soloShell(){soloOn=true;$('#tabs').hidden=true;document.querySelector('header').hidden=true;['bens','lab','scan'].forEach(k=>$('#v-'+k).hidden=true);$('#v-solo').hidden=false}
 function renderSolo(id){
   soloShell();const b=bens.get(id);
-  $('#solo').innerHTML=b?('<div class="mut">PATRIMÔNIO</div><div style="font-size:30px;font-weight:700;line-height:1.1">'+esc(b.patrimonio)+'</div>'+(b.tipo?'<div class="mut" style="margin-bottom:8px">'+esc(b.tipo)+'</div>':'')+'<div class="ficha">'+CAMPOS.filter(c=>b[c[0]]).map(c=>'<div><span>'+c[1]+'</span><b>'+esc(b[c[0]])+'</b></div>').join('')+'</div>'):'<b>Patrimônio '+esc(id)+' não encontrado.</b><p class="mut">Avise o setor de TI.</p>';
+  $('#solo').innerHTML=b?('<div class="mut">PATRIMÔNIO DA CÂMARA</div><div style="font-size:30px;font-weight:700;line-height:1.1">'+esc(b.patrimonio)+'</div>'+(b.tipo?'<div class="mut" style="margin-bottom:8px">'+esc(b.tipo)+'</div>':'')+'<div class="ficha">'+CAMPOS.filter(c=>b[c[0]]).map(c=>'<div><span>'+c[1]+'</span><b>'+esc(b[c[0]])+'</b></div>').join('')+'</div>'):'<b>Patrimônio '+esc(id)+' não encontrado.</b><p class="mut">Avise o setor de TI da Câmara.</p>';
 }
 let lastHash=null;
-function fromHash(){let h='';try{h=decodeURIComponent(location.hash.slice(1))}catch(e){}if(h&&h!==lastHash){lastHash=h;pending=h;if(!soloOn){soloShell();$('#solo').innerHTML='<p class="mut">Carregando…</p>';setTimeout(()=>{if(pending)$('#solo').innerHTML='<b>Não foi possível carregar o cadastro.</b><p class="mut">Entre na sua conta e tente de novo, ou fale com a TI.</p>'},7000)}tryPending()}}
+function fromHash(){let h='';try{h=decodeURIComponent(location.hash.slice(1))}catch(e){}if(h&&h!==lastHash){lastHash=h;lookup(h,true)}}
 ['hashchange','popstate','focus','pageshow'].forEach(ev=>window.addEventListener(ev,fromHash));
-document.addEventListener('visibilitychange',fromHash);
-setInterval(fromHash,700);fromHash();
+setInterval(fromHash,700);
+render();fromHash();
 </script>
 </body>
 </html>
