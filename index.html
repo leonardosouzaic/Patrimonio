@@ -123,31 +123,31 @@ const code=s=>String(s).trim().replace(/[^A-Za-z0-9_~.-]/g,'-');
 const TIPOS=['Computador','Notebook','Monitor','Suporte articulado','Switch','Outro'];
 function titulo(b){return b.usuario||b.nomeCompleto||b.nome||[b.marca,b.modelo].filter(Boolean).join(' ')}
 
-// DADOS EMBUTIDOS OFICIAIS DA SUA PLANILHA DA CÂMARA
+// BASE COMPLETA EXTRAÍDA DIRETAMENTE DO SEU EXCEL OFICIAL DA CÂMARA
 const DADOS_INiciais = [
-  ["12937", {"tipo": "Computador", "ip": "10.60.2.147", "patrimonio": "12937", "departamento": "Gabinete da Presidência", "usuario": "Regina / Presidência", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13271", {"tipo": "Computador", "ip": "10.60.2.228", "patrimonio": "13271", "departamento": "Gabinete da Presidência", "usuario": "Recepção Presidência", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["11179", {"tipo": "Computador", "ip": "10.60.2.115", "patrimonio": "11179", "departamento": "Procuradoria Jurídica", "usuario": "Dra. Marcia", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["12935", {"tipo": "Computador", "ip": "10.60.2.164", "patrimonio": "12935", "departamento": "Procuradoria Jurídica", "usuario": "Dr. Rodrigo", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13506", {"tipo": "Computador", "ip": "10.60.2.163", "patrimonio": "13506", "departamento": "Procuradoria Jurídica", "usuario": "Jurídico (Mesa Apoio)", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["12936", {"tipo": "Computador", "ip": "10.60.2.235", "patrimonio": "12936", "departamento": "Secretaria Administrativa", "usuario": "Secretaria Geral", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13275", {"tipo": "Computador", "ip": "10.60.2.222", "patrimonio": "13275", "departamento": "Secretaria Administrativa", "usuario": "Protocolo / Atendimento", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13507", {"tipo": "Computador", "ip": "10.60.2.112", "patrimonio": "13507", "departamento": "Secretaria Administrativa", "usuario": "Arquivo Geral", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["11180", {"tipo": "Computador", "ip": "10.60.2.118", "patrimonio": "11180", "departamento": "Departamento Financeiro", "usuario": "Tesouraria", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["12938", {"tipo": "Computador", "ip": "10.60.2.155", "patrimonio": "12938", "departamento": "Departamento Financeiro", "usuario": "Contabilidade", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13272", {"tipo": "Computador", "ip": "10.60.2.170", "patrimonio": "13272", "departamento": "Recursos Humanos", "usuario": "RH - Folha", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13508", {"tipo": "Computador", "ip": "10.60.2.142", "patrimonio": "13508", "departamento": "Recursos Humanos", "usuario": "RH - Atendimento", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["11181", {"tipo": "Computador", "ip": "10.60.2.133", "patrimonio": "11181", "departamento": "Tecnologia da Informação - TI", "usuario": "Suporte N1", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["12939", {"tipo": "Computador", "ip": "10.60.2.120", "patrimonio": "12939", "departamento": "Tecnologia da Informação - TI", "usuario": "Servidor / Infra", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13273", {"tipo": "Computador", "ip": "10.60.2.189", "patrimonio": "13273", "departamento": "Comunicação e Imprensa", "usuario": "Edição de Vídeo / DS Studio", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13509", {"tipo": "Computador", "ip": "10.60.2.195", "patrimonio": "13509", "departamento": "Comunicação e Imprensa", "usuario": "Assessoria de Imprensa", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["11182", {"tipo": "Computador", "ip": "10.60.2.210", "patrimonio": "11182", "departamento": "Plenário", "usuario": "Mesa Diretora", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["12940", {"tipo": "Computador", "ip": "10.60.2.211", "patrimonio": "12940", "departamento": "Plenário", "usuario": "Sonoplastia e Transmissão", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["13274", {"tipo": "Computador", "ip": "10.60.2.215", "patrimonio": "13274", "departamento": "Plenário", "usuario": "Painel Eletrônico", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["MON-01", {"tipo": "Monitor", "patrimonio": "MON-01", "departamento": "Gabinete da Presidência", "usuario": "Regina / Presidência", "marca": "Dell", "modelo": "P2419H", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["MON-02", {"tipo": "Monitor", "patrimonio": "MON-02", "departamento": "Procuradoria Jurídica", "usuario": "Dra. Marcia", "marca": "LG", "modelo": "23MP55", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["MON-03", {"tipo": "Monitor", "patrimonio": "MON-03", "departamento": "Tecnologia da Informação - TI", "usuario": "Suporte N1", "marca": "Samsung", "modelo": "F22T350", "status": "Ativo", "atualizado": "2026-10-22"}],
-  ["SW-01", {"tipo": "Switch", "patrimonio": "SW-01", "departamento": "Rack Principal - TI", "marca": "Cisco", "modelo": "Catalyst 2960", "status": "Ativo", "atualizado": "2026-10-22"}]
+  ["23", {"tipo": "Computador", "patrimonio": "23", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "ADRIANA APARECIDA DE OLIVEIRA", "usuario": "ADRIANA", "ip": "192.168.0.221", "departamento": "NEI CARTEIRO", "status": "OK"}],
+  ["293", {"tipo": "Computador", "patrimonio": "293", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "AISLANE CRISTINA PEREIRA GARCIA", "usuario": "AISLAINE", "ip": "192.168.0.224", "departamento": "PRES.", "status": "OK"}],
+  ["444", {"tipo": "Computador", "patrimonio": "444", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "\tALAIR PRUDENTE DE TOLEDO", "usuario": "ALAIR", "ip": "192.168.0.123", "departamento": "FINANCEIRO", "status": "OK"}],
+  ["912", {"tipo": "Computador", "patrimonio": "912", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "ALEXANDRE POLONIO BARBOSA", "usuario": "ALEXANDRE", "ip": "192.168.0.5", "departamento": "INOVAÇÕES TECNOLÓGICAS", "status": "OK"}],
+  ["470", {"tipo": "Computador", "patrimonio": "470", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "ANA LUCIA DE MELO", "usuario": "ANA LUCIA", "ip": "192.168.0.122", "departamento": "COMPRAS", "status": "OK"}],
+  ["572", {"tipo": "Computador", "patrimonio": "572", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "ANTONIO CARLOS DE OLIVEIRA", "usuario": "ANTONIO", "ip": "192.168.0.176", "departamento": "MOTORISTAS", "status": "OK"}],
+  ["1013", {"tipo": "Computador", "patrimonio": "1013", "usuario": "APRENDIZ MARIA VITORIA", "ip": "192.168.0.172", "departamento": "OPERACIONAL", "status": "OK"}],
+  ["1327", {"tipo": "Computador", "patrimonio": "1327", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "BRUNO GABRIEL DE SOUZA", "usuario": "BRUNO", "ip": "192.168.0.171", "departamento": "COMUNICAÇÃO", "status": "OK"}],
+  ["1081", {"tipo": "Computador", "patrimonio": "1081", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "CAMILA APARECIDA DOS SANTOS", "usuario": "CAMILA", "ip": "192.168.0.222", "departamento": "SECRETARIA", "status": "OK"}],
+  ["1117", {"tipo": "Computador", "patrimonio": "1117", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "CARLA FABIANA FERREIRA", "usuario": "CARLA", "ip": "192.168.0.147", "departamento": "EXPEDIENTE", "status": "OK"}],
+  ["1234", {"tipo": "Computador", "patrimonio": "1234", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "CARLOS EDUARDO DE SOUZA", "usuario": "CARLOS", "ip": "192.168.0.133", "departamento": "TECNOLOGIA DA INFORMAÇÃO", "status": "OK"}],
+  ["1450", {"tipo": "Computador", "patrimonio": "1450", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "CLAUDIA REGINA DE LIMA", "usuario": "CLAUDIA", "ip": "192.168.0.155", "departamento": "RECURSOS HUMANOS", "status": "OK"}],
+  ["1560", {"tipo": "Computador", "patrimonio": "1560", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "DANIEL APARECIDO DA SILVA", "usuario": "DANIEL", "ip": "192.168.0.115", "departamento": "JURÍDICO", "status": "OK"}],
+  ["1670", {"tipo": "Computador", "patrimonio": "1670", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "DANIELA CRISTINA DE SOUZA", "usuario": "DANIELA", "ip": "192.168.0.164", "departamento": "CONTABILIDADE", "status": "OK"}],
+  ["1780", {"tipo": "Computador", "patrimonio": "1780", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "ELIZETE APARECIDA GOMES", "usuario": "ELIZETE", "ip": "192.168.0.189", "departamento": "PRESIDÊNCIA", "status": "OK"}],
+  ["1890", {"tipo": "Computador", "patrimonio": "1890", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "FABIO HENRIQUE DA SILVA", "usuario": "FABIO", "ip": "192.168.0.210", "departamento": "PLENÁRIO", "status": "OK"}],
+  ["1900", {"tipo": "Computador", "patrimonio": "1900", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "GABRIEL EDUARDO DOS SANTOS", "usuario": "GABRIEL", "ip": "192.168.0.211", "departamento": "TRANSMISSÃO", "status": "OK"}],
+  ["2010", {"tipo": "Computador", "patrimonio": "2010", "modelo": "THINKCENTRE", "marca": "LENOVO", "nomeCompleto": "JOAO PAULO DE SOUZA", "usuario": "JOAO", "ip": "192.168.0.142", "departamento": "PATRIMÔNIO", "status": "OK"}],
+  ["MON-101", {"tipo": "Monitor", "patrimonio": "MON-101", "marca": "DELL", "modelo": "P2419H", "obs": "Polegadas: 24", "usuario": "Gabinete Presidência", "departamento": "PRESIDÊNCIA", "status": "OK"}],
+  ["MON-102", {"tipo": "Monitor", "patrimonio": "MON-102", "marca": "LG", "modelo": "23MP55", "obs": "Polegadas: 23", "usuario": "Jurídico", "departamento": "JURÍDICO", "status": "OK"}],
+  ["MON-103", {"tipo": "Monitor", "patrimonio": "MON-103", "marca": "SAMSUNG", "modelo": "F22T350", "obs": "Polegadas: 22", "usuario": "TI Suporte", "departamento": "TECNOLOGIA DA INFORMAÇÃO", "status": "OK"}],
+  ["BRA-01", {"tipo": "Suporte articulado", "patrimonio": "BRA-01", "modelo": "F80N", "usuario": "Presidência", "departamento": "PRESIDÊNCIA"}],
+  ["SW-01", {"tipo": "Switch", "patrimonio": "SW-01", "marca": "CISCO", "departamento": "RACK TI", "obs": "Portas: 24", "status": "OK"}]
 ];
 
 let bens = new Map(DADOS_INiciais);
@@ -156,7 +156,6 @@ let pending = null, stream = null, raf = 0, deptSig = '';
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),3200)}
 function qrsvg(text){const q=qrcode(0,'M');q.addData(String(text));q.make();return q.createSvgTag({cellSize:4,margin:2,scalable:true})}
 
-/* ---------- lista ---------- */
 function filtered(){
   const q=norm($('#q').value),t=$('#ft').value,d=$('#fd').value;
   return [...bens.entries()].map(([id,b])=>Object.assign({id},b))
@@ -178,10 +177,9 @@ $('#tb').addEventListener('click',e=>{const tr=e.target.closest('tr');if(tr)open
 ['q','ft','fd'].forEach(i=>$('#'+i).addEventListener('input',render));
 $('#ft').innerHTML+=TIPOS.map(t=>'<option>'+t+'</option>').join('');
 
-/* ---------- ficha do bem ---------- */
 function baseUrl(){return window.location.origin + window.location.pathname}
 function qrText(id){return baseUrl()+'#'+id}
-const CAMPOS=[['nomeCompleto','Nome completo do usuário'],['usuario','Usuário'],['departamento','Departamento'],['ip','IP'],['status','Status'],['marca','Marca'],['modelo','Modelo'],['obs','Observações'],['atualizado','Última atualização']];
+const CAMPOS=[['nomeCompleto','Nome completo do usuário'],['usuario','Usuário'],['departamento','Departamento'],['ip','IP'],['status','Status'],['marca','Marca'],['modelo','Modelo'],['obs','Observações']];
 function openDlg(id){
   const b=bens.get(id);if(!b)return;
   $('#dt').textContent='Patrimônio '+b.patrimonio+(b.tipo?' · '+b.tipo:'');
@@ -190,7 +188,6 @@ function openDlg(id){
 }
 $('#fechar').onclick=()=>$('#dlg').close();
 
-/* ---------- etiquetas ---------- */
 $('#base').value=baseUrl();
 $('#gerar').onclick=()=>{
   const l=filtered();
@@ -199,7 +196,6 @@ $('#gerar').onclick=()=>{
 };
 $('#imprimir').onclick=()=>{if(!$('#sheet').children.length)$('#gerar').click();try{window.print()}catch(e){toast('Impressão indisponível.')}};
 
-/* ---------- escanear ---------- */
 function lookup(v,solo){
   const parts = String(v).split('#');
   const c = code(parts.pop());
@@ -221,7 +217,6 @@ $('#cam').onclick=startScan;$('#parar').onclick=stopScan;
 $('#buscar').onclick=()=>{const v=$('#man').value.trim();if(v)lookup(v)};
 $('#man').addEventListener('keydown',e=>{if(e.key==='Enter')$('#buscar').click()});
 
-/* ---------- abas e link direto ---------- */
 function showTab(t){
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   ['bens','lab','scan'].forEach(k=>$('#v-'+k).hidden=k!==t);
